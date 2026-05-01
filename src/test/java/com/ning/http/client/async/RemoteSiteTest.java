@@ -44,7 +44,7 @@ import com.ning.http.util.AsyncHttpProviderUtils;
 
 /**
  * Unit tests for remote site.
- * <p/>
+ * <p>
  * see http://github.com/MSch/ning-async-http-client-bug/tree/master
  * 
  * @author Martin Schurrer

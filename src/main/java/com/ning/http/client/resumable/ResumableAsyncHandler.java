@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * this handler can resume the download operation at the point it was before the interruption occured. This prevent having to
  * download the entire file again. It's the responsibility of the {@link com.ning.http.client.listener.TransferListener}
  * to track how many bytes has been transferred and to properly adjust the file's write position.
- * <p/>
+ * <p>
  * In case of a JVM crash/shutdown, you can create an instance of this class and pass the last valid bytes position.
  */
 public class ResumableAsyncHandler<T> implements AsyncHandler<T> {

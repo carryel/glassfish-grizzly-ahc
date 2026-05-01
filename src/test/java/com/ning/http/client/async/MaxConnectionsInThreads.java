@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Contributors to the Eclipse Foundation.
+ * Copyright (c) 2025, 2026 Contributors to the Eclipse Foundation.
  * Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
  * Copyright 2010 Ning, Inc.
  *
@@ -57,11 +57,12 @@ abstract public class MaxConnectionsInThreads extends AbstractBasicTest {
 
         final CountDownLatch inThreadsLatch = new CountDownLatch(2);
         final AtomicInteger failedCount = new AtomicInteger();
-        
+
         try (AsyncHttpClient client = getAsyncHttpClient(config)) {
             for (int i = 0; i < urls.length; i++) {
                 final String url = urls[i];
                 Thread t = new Thread() {
+                    @Override
                     public void run() {
                         client.prepareGet(url).execute(new AsyncCompletionHandlerBase() {
                             @Override
@@ -70,7 +71,7 @@ abstract public class MaxConnectionsInThreads extends AbstractBasicTest {
                                 inThreadsLatch.countDown();
                                 return r;
                             }
-                            
+
                             @Override
                             public void onThrowable(Throwable t) {
                                 super.onThrowable(t);
@@ -99,7 +100,7 @@ abstract public class MaxConnectionsInThreads extends AbstractBasicTest {
                         notInThreadsLatch.countDown();
                         return r;
                     }
-                    
+
                     @Override
                     public void onThrowable(Throwable t) {
                         super.onThrowable(t);
@@ -108,15 +109,15 @@ abstract public class MaxConnectionsInThreads extends AbstractBasicTest {
                     }
                 });
             }
-            
+
             notInThreadsLatch.await();
-            
+
             assertEquals(failedCount.get(), 1, "Max Connections should have been reached when launching from main thread");
         }
     }
 
     @Override
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void setUpGlobal() throws Exception {
 
         server = new Server();
@@ -143,12 +144,13 @@ abstract public class MaxConnectionsInThreads extends AbstractBasicTest {
 
     }
 
+    @Override
     public String getTargetUrl() {
         String s = "http://127.0.0.1:" + port1 + "/timeout/";
         try {
             servletEndpointUri = new URI(s);
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Unable to create URI for servlet endpoint: " + s, e);
         }
         return s;
     }
@@ -157,13 +159,13 @@ abstract public class MaxConnectionsInThreads extends AbstractBasicTest {
         private static final String contentType = "text/plain";
         public static long DEFAULT_TIMEOUT = 2000;
 
+        @Override
         public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
             res.setStatus(200);
             res.addHeader("Content-Type", contentType);
             long sleepTime = DEFAULT_TIMEOUT;
             try {
                 sleepTime = Integer.parseInt(req.getParameter("timeout"));
-
             } catch (NumberFormatException e) {
                 sleepTime = DEFAULT_TIMEOUT;
             }
@@ -179,7 +181,7 @@ abstract public class MaxConnectionsInThreads extends AbstractBasicTest {
                 System.out.println("=======================================");
                 System.out.flush();
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
 
             res.setHeader("XXX", "TripleX");

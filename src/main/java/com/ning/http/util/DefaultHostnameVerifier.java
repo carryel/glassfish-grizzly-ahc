@@ -22,7 +22,7 @@
  *
  * To the extent possible under law, Kevin Locke has waived all copyright and
  * related or neighboring rights to this work.
- * <p/>
+ * <p>
  * A legal description of this waiver is available in <a href="https://gist.github.com/kevinoid/3829665">LICENSE.txt</a>
  */
 
@@ -49,9 +49,9 @@ import java.security.cert.X509Certificate;
  * please read
  * <a href="http://tersesystems.com/2014/03/23/fixing-hostname-verification/">Fixing
  * Hostname Verification</a>.
- * <p/>
+ * <p>
  * This code is based on Kevin Locke's <a href="http://kevinlocke.name/bits/2012/10/03/ssl-certificate-verification-in-dispatch-and-asynchttpclient/">guide</a> .
- * <p/>
+ * <p>
  */
 public class DefaultHostnameVerifier implements HostnameVerifier {
 

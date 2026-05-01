@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2025 Contributors to the Eclipse Foundation.
+    Copyright (c) 2025, 2026 Contributors to the Eclipse Foundation.
     Copyright (c) 2019, 2020 Oracle and/or its affiliates. All rights reserved.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
- 
+
         http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
@@ -15,12 +15,12 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
- 
+
     SPDX-License-Identifier: Apache-2.0
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.eclipse.ee4j</groupId>
         <artifactId>project</artifactId>
@@ -31,7 +31,7 @@
     <artifactId>grizzly-http-client</artifactId>
     <packaging>jar</packaging>
     <name>Grizzly Async HTTP Client</name>
-    <version>4.0-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <description>
         The Grizzly Async Http Client library purpose is to allow Java applications to easily execute HTTP requests and
         asynchronously process the HTTP responses.
@@ -39,12 +39,10 @@
     <url>https://github.com/eclipse-ee4j/glassfish-grizzly-ahc</url>
     <scm>
         <connection>scm:git:https://github.com/eclipse-ee4j/glassfish-grizzly-ahc.git</connection>
-        <developerConnection>
-            scm:git:git@github.com:eclipse-ee4j/glassfish-grizzly-ahc.git
-        </developerConnection>
+        <developerConnection>scm:git:git@github.com:eclipse-ee4j/glassfish-grizzly-ahc.git</developerConnection>
         <url>https://github.com/eclipse-ee4j/glassfish-grizzly-ahc</url>
       <tag>HEAD</tag>
-  </scm>
+    </scm>
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/eclipse-ee4j/glassfish-grizzly-ahc/issues</url>
@@ -60,6 +58,14 @@
     </mailingLists>
 
     <developers>
+        <developer>
+            <id>eclipse-glassfish-dev</id>
+            <name>GlassFish Development Team</name>
+            <email>glassfish-dev@eclipse.org</email>
+            <organization>Eclipse Foundation</organization>
+            <organizationUrl>https://www.eclipse.org</organizationUrl>
+            <url>https://projects.eclipse.org/projects/ee4j.glassfish/who</url>
+        </developer>
         <developer>
             <id>brianm</id>
             <name>Brian McCallister</name>
@@ -91,6 +97,10 @@
         </developer>
     </developers>
     <contributors>
+        <contributor>
+            <name>GitHub Contributors</name>
+            <url>https://github.com/eclipse-ee4j/glassfish-grizzly-ahc/graphs/contributors</url>
+        </contributor>
         <contributor>
             <name>Simone Tripodi</name>
             <email>simonetripodi@apache.org</email>
@@ -140,7 +150,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>23.0</version>
+            <version>33.6.0-jre</version>
             <optional>true</optional>
         </dependency>
 
@@ -150,17 +160,11 @@
             <artifactId>testng</artifactId>
             <version>7.12.0</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.beanshell</groupId>
-                    <artifactId>bsh</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
+            <artifactId>mockito-core</artifactId>
+            <version>5.23.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -189,31 +193,29 @@
         </dependency>
     </dependencies>
     <build>
-        <extensions>
-            <!-- Enabling the use of SSH -->
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ssh-external</artifactId>
-                <version>3.5.3</version>
-            </extension>
-            <extension>
-                <groupId>org.apache.maven.scm</groupId>
-                <artifactId>maven-scm-provider-gitexe</artifactId>
-                <version>2.2.1</version>
-            </extension>
-            <extension>
-                <groupId>org.apache.maven.scm</groupId>
-                <artifactId>maven-scm-manager-plexus</artifactId>
-                <version>2.2.1</version>
-            </extension>
-            <extension>
-                <groupId>org.kathrynhuxtable.maven.wagon</groupId>
-                <artifactId>wagon-gitsite</artifactId>
-                <version>0.3.1</version>
-            </extension>
-        </extensions>
-        <defaultGoal>install</defaultGoal>
         <plugins>
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.6.2</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[${java.version},)</version>
+                                </requireJavaVersion>
+                                <requireMavenVersion>
+                                    <version>3.9.5</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -227,55 +229,16 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
                 <configuration>
-                    <argLine>
-                        --add-opens java.base/java.lang=ALL-UNNAMED
-                    </argLine>
+                    <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-scm-plugin</artifactId>
-                <version>2.2.1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>animal-sniffer-maven-plugin</artifactId>
-                <version>1.27</version>
-                <configuration>
-                    <signature>
-                        <groupId>org.codehaus.mojo.signature</groupId>
-                        <artifactId>java18</artifactId>
-                        <version>1.0</version>
-                    </signature>
-                    <ignores>
-                        <ignore>sun.misc.Unsafe</ignore>
-                    </ignores>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>check-java-1.8-compat</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>6.0.0</version>
+                <version>6.0.2</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <manifestLocation>META-INF</manifestLocation>
-                    <instructions>
-                        <Import-Package>
-                            *
-                        </Import-Package>
-                        <Export-Package>
-                            com.ning.http.*;version=${project.version},
-                        </Export-Package>
-                    </instructions>
+                    <manifestLocation>${project.build.directory}/META-INF</manifestLocation>
                 </configuration>
                 <executions>
                     <execution>
@@ -330,8 +293,8 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.12.0</version>
                 <configuration>
-                    <doclint>none</doclint>
-                    <source>${maven.compiler.source}</source>
+                    <doclint>-missing</doclint>
+                    <release>${maven.compiler.release}</release>
                     <encoding>UTF-8</encoding>
                     <maxmemory>1g</maxmemory>
                 </configuration>
@@ -353,7 +316,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.12.0</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
+                    <release>${maven.compiler.release}</release>
                     <encoding>UTF-8</encoding>
                     <maxmemory>1g</maxmemory>
                     <doclet>com.google.doclava.Doclava</doclet>
@@ -399,9 +362,6 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <groups>standalone</groups>
-                            <argLine>
-                                --add-opens java.base/java.lang=ALL-UNNAMED
-                            </argLine>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -416,21 +376,23 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <groups>standalone, online</groups>
-                            <argLine>
-                                --add-opens java.base/java.lang=ALL-UNNAMED
-                            </argLine>
                         </configuration>
                     </plugin>
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>oss-release</id>
+            <properties>
+                <release.autoPublish>false</release.autoPublish>
+                <release.waitUntil>published</release.waitUntil>
+            </properties>
+        </profile>
     </profiles>
 
     <properties>
         <grizzly.version>5.0.1</grizzly.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.release>8</maven.compiler.release>
+        <maven.compiler.release>21</maven.compiler.release>
         <surefire.version>3.5.5</surefire.version>
         <jetty.version>12.1.8</jetty.version>
         <slf4j.version>2.0.17</slf4j.version>

@@ -38,31 +38,32 @@ import java.util.concurrent.Future;
  * Simple implementation of {@link AsyncHttpClient} and it's related builders ({@link com.ning.http.client.AsyncHttpClientConfig},
  * {@link Realm}, {@link com.ning.http.client.ProxyServer} and {@link com.ning.http.client.AsyncHandler}. You can
  * build powerful application by just using this class.
- * <p/>
+ * <p>
  * This class rely on {@link BodyGenerator} and {@link BodyConsumer} for handling the request and response body. No
  * {@link AsyncHandler} are required. As simple as:
- * <blockquote><pre>
+ * <pre>{@code
  * SimpleAsyncHttpClient client = new SimpleAsyncHttpClient.Builder()
  * .setIdleConnectionInPoolTimeout(100)
  * .setMaximumConnectionsTotal(50)
  * .setRequestTimeout(5 * 60 * 1000)
  * .setUrl(getTargetUrl())
  * .setHeader("Content-Type", "text/html").build();
- * <p/>
+ *
  * StringBuilder s = new StringBuilder();
  * Future<Response> future = client.post(new InputStreamBodyGenerator(new ByteArrayInputStream(MY_MESSAGE.getBytes())), new AppendableBodyConsumer(s));
- * </pre></blockquote>
+ * }</pre>
  * or
- * <blockquote><pre>
+ * <pre>{@code
  * public void ByteArrayOutputStreamBodyConsumerTest() throws Throwable {
- * <p/>
+ * 
  * SimpleAsyncHttpClient client = new SimpleAsyncHttpClient.Builder()
  * .setUrl(getTargetUrl())
  * .build();
- * <p/>
+ * 
  * ByteArrayOutputStream o = new ByteArrayOutputStream(10);
  * Future<Response> future = client.post(new FileodyGenerator(myFile), new OutputStreamBodyConsumer(o));
- * </pre></blockquote>
+ * }
+ * }</pre>
  */
 public class SimpleAsyncHttpClient implements AutoCloseable {
 
@@ -295,10 +296,11 @@ public class SimpleAsyncHttpClient implements AutoCloseable {
     private AsyncHttpClient asyncHttpClient() {
         synchronized (config) {
             if (asyncHttpClient == null) {
-                if (providerClass == null)
+                if (providerClass == null) {
                     asyncHttpClient = new AsyncHttpClient(config);
-                else
+                } else {
                     asyncHttpClient = new AsyncHttpClient(providerClass, config);
+                }
             }
         }
         return asyncHttpClient;
@@ -306,7 +308,7 @@ public class SimpleAsyncHttpClient implements AutoCloseable {
 
     /**
      * Close the underlying AsyncHttpClient for this instance.
-     * <p/>
+     * <p>
      * If this instance is derived from another instance, this method does
      * nothing as the client instance is managed by the original
      * SimpleAsyncHttpClient.
@@ -314,6 +316,7 @@ public class SimpleAsyncHttpClient implements AutoCloseable {
      * @see #derive()
      * @see AsyncHttpClient#close()
      */
+    @Override
     public void close() {
         if (!derived && asyncHttpClient != null) {
             asyncHttpClient.close();
@@ -323,9 +326,9 @@ public class SimpleAsyncHttpClient implements AutoCloseable {
     /**
      * Returns a Builder for a derived SimpleAsyncHttpClient that uses the same
      * instance of {@link AsyncHttpClient} to execute requests.
-     * <p/>
-     * <p/>
-     * <p/>
+     * <p>
+     * <p>
+     * <p>
      * The original SimpleAsyncHttpClient is responsible for managing the
      * underlying AsyncHttpClient. For the derived instance, {@link #close()} is
      * a NOOP. If the original SimpleAsyncHttpClient is closed, all derived
@@ -426,66 +429,79 @@ public class SimpleAsyncHttpClient implements AutoCloseable {
             this.listener = client.listener;
         }
 
+        @Override
         public Builder addBodyPart(Part part) {
             requestBuilder.addBodyPart(part);
             return this;
         }
 
+        @Override
         public Builder addCookie(Cookie cookie) {
             requestBuilder.addCookie(cookie);
             return this;
         }
 
+        @Override
         public Builder addHeader(String name, String value) {
             requestBuilder.addHeader(name, value);
             return this;
         }
 
+        @Override
         public Builder addFormParam(String key, String value) {
             requestBuilder.addFormParam(key, value);
             return this;
         }
 
+        @Override
         public Builder addQueryParam(String name, String value) {
             requestBuilder.addQueryParam(name, value);
             return this;
         }
 
+        @Override
         public Builder setHeader(String name, String value) {
             requestBuilder.setHeader(name, value);
             return this;
         }
 
+        @Override
         public Builder setHeaders(FluentCaseInsensitiveStringsMap headers) {
             requestBuilder.setHeaders(headers);
             return this;
         }
 
+        @Override
         public Builder setHeaders(Map<String, Collection<String>> headers) {
             requestBuilder.setHeaders(headers);
             return this;
         }
-        
+
+        @Override
         public Builder setFormParams(List<Param> params) {
             requestBuilder.setFormParams(params);
             return this;
         }
 
+        @Override
         public Builder setFormParams(Map<String, List<String>> params) {
             requestBuilder.setFormParams(params);
             return this;
         }
 
+        @Override
         public Builder setUrl(String url) {
             requestBuilder.setUrl(url);
             return this;
         }
 
+        @Override
         public Builder setVirtualHost(String virtualHost) {
             requestBuilder.setVirtualHost(virtualHost);
             return this;
         }
 
+        @Override
         public Builder setFollowRedirects(boolean followRedirects) {
             requestBuilder.setFollowRedirects(followRedirects);
             return this;
@@ -625,6 +641,7 @@ public class SimpleAsyncHttpClient implements AutoCloseable {
          * Enable resumable downloads for the SimpleAHC. Resuming downloads will only work for GET requests
          * with an instance of {@link ResumableBodyConsumer}.
          */
+        @Override
         public Builder setResumableDownload(boolean enableResumableDownload) {
             this.enableResumableDownload = enableResumableDownload;
             return this;
@@ -666,6 +683,7 @@ public class SimpleAsyncHttpClient implements AutoCloseable {
             return this;
         }
 
+        @Override
         public SimpleAsyncHttpClient build() {
 
             if (realmBuilder != null) {
@@ -695,14 +713,17 @@ public class SimpleAsyncHttpClient implements AutoCloseable {
             this.delegate = delegate;
         }
 
+        @Override
         public com.ning.http.client.AsyncHandler.STATE onHeaderWriteCompleted() {
             return delegate.onHeaderWriteCompleted();
         }
 
+        @Override
         public com.ning.http.client.AsyncHandler.STATE onContentWriteCompleted() {
             return delegate.onContentWriteCompleted();
         }
 
+        @Override
         public com.ning.http.client.AsyncHandler.STATE onContentWriteProgress(long amount, long current, long total) {
             return delegate.onContentWriteProgress(amount, current, total);
         }
@@ -742,6 +763,7 @@ public class SimpleAsyncHttpClient implements AutoCloseable {
             }
         }
 
+        @Override
         public STATE onBodyPartReceived(final HttpResponseBodyPart content) throws Exception {
             fireReceived(content);
             if (omitBody) {

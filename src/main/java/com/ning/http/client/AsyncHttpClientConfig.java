@@ -39,7 +39,7 @@ import java.util.concurrent.ThreadFactory;
 /**
  * Configuration class to use with a {@link AsyncHttpClient}. System property can be also used to configure this
  * object default behavior by doing:
- * <p/>
+ * <p>
  * -Dcom.ning.http.client.AsyncHttpClientConfig.nameOfTheProperty
  */
 public class AsyncHttpClientConfig {
@@ -833,10 +833,10 @@ public class AsyncHttpClientConfig {
 
         /**
          * Sets whether AHC should use the default JDK ProxySelector to select a proxy server.
-         * <p/>
+         * <p>
          * If useProxySelector is set to <code>true</code> but {@link #setProxyServer(ProxyServer)}
          * was used to explicitly set a proxy server, the latter is preferred.
-         * <p/>
+         * <p>
          * See http://docs.oracle.com/javase/7/docs/api/java/net/ProxySelector.html
          */
         public Builder setUseProxySelector(boolean useProxySelector) {
@@ -849,10 +849,10 @@ public class AsyncHttpClientConfig {
          * to obtain proxy information.  This differs from {@link #setUseProxySelector(boolean)}
          * in that AsyncHttpClient will use its own logic to handle the system properties,
          * potentially supporting other protocols that the the JDK ProxySelector doesn't.
-         * <p/>
+         * <p>
          * If useProxyProperties is set to <code>true</code> but {@link #setUseProxySelector(boolean)}
          * was also set to true, the latter is preferred.
-         * <p/>
+         * <p>
          * See http://download.oracle.com/javase/1.4.2/docs/guide/net/properties.html
          */
         public Builder setUseProxyProperties(boolean useProxyProperties) {

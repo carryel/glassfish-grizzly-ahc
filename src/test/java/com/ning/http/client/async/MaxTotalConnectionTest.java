@@ -51,7 +51,7 @@ public abstract class MaxTotalConnectionTest extends AbstractBasicTest {
             for (int i = 0; i < 2; i++) {
                 futures.add(client.prepareGet(url).execute());
             }
-            
+
             boolean caughtError = false;
             int i;
             for (i = 0; i < futures.size(); i++) {
@@ -71,7 +71,7 @@ public abstract class MaxTotalConnectionTest extends AbstractBasicTest {
 
     @Test
     public void testMaxTotalConnections() throws InterruptedException {
-        String[] urls = new String[] { "http://google.com", "http://lenta.ru" };
+        String[] urls = new String[] { "http://google.com", "http://nonexistingdomain.ru", "http://github.com" };
 
         AsyncHttpClientConfig config = new AsyncHttpClientConfig.Builder().setConnectTimeout(1000).setRequestTimeout(5000)
                 .setAllowPoolingConnections(false).setMaxConnections(2).setMaxConnectionsPerHost(1).build();
@@ -100,7 +100,7 @@ public abstract class MaxTotalConnectionTest extends AbstractBasicTest {
             }
 
             latch.await();
-            assertNull(failedUrl.get());
+            assertEquals(urls[1], failedUrl.get());
         }
     }
 }

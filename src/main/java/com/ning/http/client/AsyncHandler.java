@@ -27,11 +27,11 @@ package com.ning.http.client;
  * <li>{@link #onBodyPartReceived(HttpResponseBodyPart)}, which could be invoked multiple times,</li>
  * <li>{@link #onCompleted()}, once the response has been fully read.</li>
  * </ol>
- * <p/>
+ * <p>
  * Returning a {@link AsyncHandler.STATE#ABORT} from any of those callback methods will interrupt asynchronous response
  * processing, after that only {@link #onCompleted()} is going to be called.
- * <p/>
- * <p/>
+ * <p>
+ * <p>
  * AsyncHandler aren't thread safe, hence you should avoid re-using the same instance when doing concurrent requests.
  * As an exmaple, the following may produce unexpected results:
  * <blockquote><pre>
@@ -100,8 +100,8 @@ public interface AsyncHandler<T> {
 
     /**
      * Invoked once the HTTP response processing is finished.
-     * <p/>
-     * <p/>
+     * <p>
+     * <p>
      * Gets always invoked as last callback method.
      *
      * @return T Value that will be returned by the associated {@link java.util.concurrent.Future}
