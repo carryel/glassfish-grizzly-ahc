@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Contributors to the Eclipse Foundation.
+ * Copyright (c) 2025, 2026 Contributors to the Eclipse Foundation.
  * Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
  * Copyright 2010 Ning, Inc.
  *
@@ -51,9 +51,9 @@ import java.net.ServerSocket;
 import java.util.List;
 
 public abstract class AbstractBasicTest {
-    
+
     public final static String TEXT_HTML_CONTENT_TYPE_WITH_UTF_8_CHARSET = "text/html; charset=utf-8";
-    
+
     protected final Logger log = LoggerFactory.getLogger(AbstractBasicTest.class);
     protected Server server;
     protected int port1;
@@ -116,12 +116,14 @@ public abstract class AbstractBasicTest {
             }
 
             final String pathInfo = Request.getPathInContext(request);
-            if (pathInfo != null)
+            if (pathInfo != null) {
                 responseHeaders.put("X-pathInfo", pathInfo);
+            }
 
             final String queryString = request.getHttpURI().getQuery();
-            if (queryString != null)
+            if (queryString != null) {
                 responseHeaders.put("X-queryString", queryString);
+            }
 
             responseHeaders.put("X-KEEP-ALIVE", Request.getRemoteAddr(request) + ":" + Request.getRemotePort(request));
 
@@ -161,7 +163,9 @@ public abstract class AbstractBasicTest {
 
     @AfterClass(alwaysRun = true)
     public void tearDownGlobal() throws Exception {
-        server.stop();
+        if (server != null) {
+            server.stop();
+        }
     }
 
     protected int findFreePort() throws IOException {
