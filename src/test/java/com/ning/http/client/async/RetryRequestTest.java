@@ -73,10 +73,6 @@ public abstract class RetryRequestTest extends AbstractBasicTest {
         }
     }
 
-    protected String getTargetUrl() {
-        return String.format("http://127.0.0.1:%d/", port1);
-    }
-
     @Override
     public Handler.Abstract configureHandler() throws Exception {
         return new SlowAndBigHandler();
