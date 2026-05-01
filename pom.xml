@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2025 Contributors to the Eclipse Foundation.
+    Copyright (c) 2025, 2026 Contributors to the Eclipse Foundation.
     Copyright (c) 2019, 2020 Oracle and/or its affiliates. All rights reserved.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
- 
+
         http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
@@ -15,12 +15,12 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
- 
+
     SPDX-License-Identifier: Apache-2.0
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.eclipse.ee4j</groupId>
         <artifactId>project</artifactId>
@@ -31,7 +31,7 @@
     <artifactId>grizzly-http-client</artifactId>
     <packaging>jar</packaging>
     <name>Grizzly Async HTTP Client</name>
-    <version>4.0-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <description>
         The Grizzly Async Http Client library purpose is to allow Java applications to easily execute HTTP requests and
         asynchronously process the HTTP responses.
@@ -39,12 +39,10 @@
     <url>https://github.com/eclipse-ee4j/glassfish-grizzly-ahc</url>
     <scm>
         <connection>scm:git:https://github.com/eclipse-ee4j/glassfish-grizzly-ahc.git</connection>
-        <developerConnection>
-            scm:git:git@github.com:eclipse-ee4j/glassfish-grizzly-ahc.git
-        </developerConnection>
+        <developerConnection>scm:git:git@github.com:eclipse-ee4j/glassfish-grizzly-ahc.git</developerConnection>
         <url>https://github.com/eclipse-ee4j/glassfish-grizzly-ahc</url>
       <tag>HEAD</tag>
-  </scm>
+    </scm>
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/eclipse-ee4j/glassfish-grizzly-ahc/issues</url>
@@ -60,6 +58,14 @@
     </mailingLists>
 
     <developers>
+        <developer>
+            <id>eclipse-glassfish-dev</id>
+            <name>GlassFish Development Team</name>
+            <email>glassfish-dev@eclipse.org</email>
+            <organization>Eclipse Foundation</organization>
+            <organizationUrl>https://www.eclipse.org</organizationUrl>
+            <url>https://projects.eclipse.org/projects/ee4j.glassfish/who</url>
+        </developer>
         <developer>
             <id>brianm</id>
             <name>Brian McCallister</name>
@@ -91,6 +97,10 @@
         </developer>
     </developers>
     <contributors>
+        <contributor>
+            <name>GitHub Contributors</name>
+            <url>https://github.com/eclipse-ee4j/glassfish-grizzly-ahc/graphs/contributors</url>
+        </contributor>
         <contributor>
             <name>Simone Tripodi</name>
             <email>simonetripodi@apache.org</email>
@@ -227,9 +237,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
                 <configuration>
-                    <argLine>
-                        --add-opens java.base/java.lang=ALL-UNNAMED
-                    </argLine>
+                    <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -399,9 +407,6 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <groups>standalone</groups>
-                            <argLine>
-                                --add-opens java.base/java.lang=ALL-UNNAMED
-                            </argLine>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -416,13 +421,17 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <groups>standalone, online</groups>
-                            <argLine>
-                                --add-opens java.base/java.lang=ALL-UNNAMED
-                            </argLine>
                         </configuration>
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>oss-release</id>
+            <properties>
+                <release.autoPublish>false</release.autoPublish>
+                <release.waitUntil>published</release.waitUntil>
+            </properties>
         </profile>
     </profiles>
 
