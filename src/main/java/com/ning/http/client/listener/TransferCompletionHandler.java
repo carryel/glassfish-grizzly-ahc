@@ -27,33 +27,33 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * A {@link org.asynchttpclient.AsyncHandler} that can be used to notify a set of {@link TransferListener}
- * <p/>
+ * <p>
  * <blockquote>
  * 
  * <pre>
  * AsyncHttpClient client = new AsyncHttpClient();
  * TransferCompletionHandler tl = new TransferCompletionHandler();
  * tl.addTransferListener(new TransferListener() {
- * <p/>
+ * <p>
  * public void onRequestHeadersSent(FluentCaseInsensitiveStringsMap headers) {
  * }
- * <p/>
+ * <p>
  * public void onResponseHeadersReceived(FluentCaseInsensitiveStringsMap headers) {
  * }
- * <p/>
+ * <p>
  * public void onBytesReceived(ByteBuffer buffer) {
  * }
- * <p/>
+ * <p>
  * public void onBytesSent(long amount, long current, long total) {
  * }
- * <p/>
+ * <p>
  * public void onRequestResponseCompleted() {
  * }
- * <p/>
+ * <p>
  * public void onThrowable(Throwable t) {
  * }
  * });
- * <p/>
+ * <p>
  * Response response = httpClient.prepareGet("http://...").execute(tl).get();
  * </pre>
  * 

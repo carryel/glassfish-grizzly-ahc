@@ -19,7 +19,7 @@ import com.ning.http.client.uri.Uri;
 
 /**
  * A simple transfer listener for use with the {@link SimpleAsyncHttpClient}.
- * <p/>
+ * <p>
  * Note: This listener does not cover requests failing before a connection is
  * established. For error handling, see
  * {@link com.ning.http.client.SimpleAsyncHttpClient.Builder#setDefaultThrowableHandler(com.ning.http.client.ThrowableHandler)}

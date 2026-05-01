@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * {@link com.ning.http.client.AsyncHttpProvider} common utilities.
- * <p/>
+ * <p>
  * The cookies's handling code is from the Netty framework.
  */
 public class AsyncHttpProviderUtils {

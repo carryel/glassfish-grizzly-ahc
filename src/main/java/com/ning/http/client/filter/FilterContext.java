@@ -27,7 +27,7 @@ import java.io.IOException;
  * received, a {@link FilterContext} is then passed to the list of {@link ResponseFilter}. {@link ResponseFilter}
  * gets invoked before the response gets processed, e.g. before authorization, redirection and invokation of {@link AsyncHandler}
  * gets processed.
- * <p/>
+ * <p>
  * Invoking {@link com.ning.http.client.filter.FilterContext#getResponseStatus()} returns an instance of {@link HttpResponseStatus}
  * that can be used to decide if the response processing should continue or not. You can stop the current response processing
  * and replay the request but creating a {@link FilterContext}. The {@link com.ning.http.client.AsyncHttpProvider}

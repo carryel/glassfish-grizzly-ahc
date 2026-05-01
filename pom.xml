@@ -293,7 +293,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.12.0</version>
                 <configuration>
-                    <doclint>none</doclint>
+                    <doclint>-missing</doclint>
                     <release>${maven.compiler.release}</release>
                     <encoding>UTF-8</encoding>
                     <maxmemory>1g</maxmemory>

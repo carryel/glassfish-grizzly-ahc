@@ -38,7 +38,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Simple OAuth signature calculator that can used for constructing client signatures
  * for accessing services that use OAuth for authorization.
- * <p/>
+ * <p>
  * Supports most common signature inclusion and calculation methods: HMAC-SHA1 for
  * calculation, and Header inclusion as inclusion method. Nonce generation uses
  * simple random numbers with base64 encoding.

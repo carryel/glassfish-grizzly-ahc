@@ -27,7 +27,7 @@ import java.nio.ByteBuffer;
 /**
  * A {@link BodyGenerator} which use an {@link InputStream} for reading bytes, without having to read the entire
  * stream in memory.
- * <p/>
+ * <p>
  * NOTE: The {@link InputStream} must support the {@link InputStream#mark} and {@link java.io.InputStream#reset()} operation.
  * If not, mechanisms like authentication, redirect, or resumable download will not works.
  */
