@@ -160,12 +160,6 @@
             <artifactId>testng</artifactId>
             <version>7.12.0</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.beanshell</groupId>
-                    <artifactId>bsh</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
