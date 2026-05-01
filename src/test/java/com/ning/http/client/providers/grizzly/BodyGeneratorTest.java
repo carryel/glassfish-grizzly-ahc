@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2026 Contributors to the Eclipse Foundation.
  * Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
  * Copyright 2010 Ning, Inc.
  *
@@ -29,14 +30,12 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static com.ning.http.client.providers.grizzly.PayloadGenFactory.getPayloadGenerator;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.nio.ByteBuffer;
 
 public class BodyGeneratorTest {
 
@@ -54,14 +53,15 @@ public class BodyGeneratorTest {
         when(bodyGenerator.createBody()).thenReturn(body);
         when(context.getMemoryManager()).thenReturn(memoryManager);
         when(requestPacket.isCommitted()).thenReturn(true);
+        when(requestPacket.httpContentBuilder()).thenCallRealMethod();
         when(memoryManager.allocate(anyInt())).thenReturn(buffer);
-        when(body.read(any(ByteBuffer.class))).thenReturn(-1L);
+        when(body.getContentLength()).thenReturn(0L);
+        when(body.read(null)).thenReturn(-1L);
     }
 
     @Test
     public void testBodyIsClosed() throws Exception {
         getPayloadGenerator(request).generate(context, request, requestPacket);
-        verify(body).close();
+        verify(body, times(1)).close();
     }
-
 }

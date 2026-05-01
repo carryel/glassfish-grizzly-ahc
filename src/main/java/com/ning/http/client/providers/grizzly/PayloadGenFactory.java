@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2026 Contributors to the Eclipse Foundation.
  * Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
  * Copyright (c) 2012-2015 Sonatype, Inc. All rights reserved.
  *
@@ -23,6 +24,7 @@ import com.ning.http.client.listener.TransferCompletionHandler;
 import com.ning.http.client.multipart.MultipartBody;
 import com.ning.http.client.multipart.MultipartUtils;
 import com.ning.http.client.multipart.Part;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,6 +32,7 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import org.glassfish.grizzly.Buffer;
 import org.glassfish.grizzly.EmptyCompletionHandler;
 import org.glassfish.grizzly.FileTransfer;
@@ -41,40 +44,39 @@ import org.glassfish.grizzly.memory.Buffers;
 import org.glassfish.grizzly.memory.MemoryManager;
 import org.glassfish.grizzly.utils.Charsets;
 
-import static com.ning.http.client.providers.grizzly.PayloadGenerator.MAX_CHUNK_SIZE;
 import static com.ning.http.util.MiscUtils.isNonEmpty;
 
 /**
  * {@link PayloadGenerator} factory.
- * 
+ *
  * @author Grizzly team
  */
 final class PayloadGenFactory {
-    
+
     private static final PayloadGenerator[] HANDLERS =
             new PayloadGenerator[]{
-                new StringPayloadGenerator(), 
+                new StringPayloadGenerator(),
                 new ByteArrayPayloadGenerator(),
                 new ParamsPayloadGenerator(),
                 new StreamDataPayloadGenerator(),
-                new PartsPayloadGenerator(), 
+                new PartsPayloadGenerator(),
                 new FilePayloadGenerator(),
                 new BodyGeneratorAdapter()};
-    
+
     public static PayloadGenerator wrapWithExpect(final PayloadGenerator generator) {
         return new ExpectWrapper(generator);
     }
-    
+
     public static PayloadGenerator getPayloadGenerator(final Request request) {
         for (final PayloadGenerator h : HANDLERS) {
             if (h.handlesPayloadType(request)) {
                 return h;
             }
         }
-        
+
         return null;
     }
-    
+
     private static final class ExpectWrapper extends PayloadGenerator {
 
         final PayloadGenerator delegate;
@@ -94,24 +96,26 @@ final class PayloadGenFactory {
         // -------------------------------------------- Methods from PayloadGenerator
 
 
+        @Override
         public boolean handlesPayloadType(Request request) {
             return delegate.handlesPayloadType(request);
         }
 
+        @Override
         @SuppressWarnings({"unchecked"})
         public boolean generate(final FilterChainContext ctx,
                 final Request request, final HttpRequestPacket requestPacket)
                 throws IOException {
-            
+
             this.request = request;
             this.requestPacket = requestPacket;
-            
+
             // Set content-length if possible
             final long contentLength = delegate.getContentLength(request);
             if (contentLength != -1) {
                 requestPacket.setContentLengthLong(contentLength);
             }
-            
+
             ctx.write(requestPacket,
                     ((!requestPacket.isCommitted())
                             ? ctx.getTransportContext().getCompletionHandler()
@@ -119,6 +123,7 @@ final class PayloadGenFactory {
             return true;
         }
 
+        @Override
         public void continueConfirmed(final FilterChainContext ctx) throws IOException {
             delegate.generate(ctx, request, requestPacket);
         }
@@ -131,10 +136,12 @@ final class PayloadGenFactory {
 
         // -------------------------------------------- Methods from BodyGenerator
 
+        @Override
         public boolean handlesPayloadType(final Request request) {
             return (request.getByteData() != null);
         }
 
+        @Override
         @SuppressWarnings({"unchecked"})
         public boolean generate(final FilterChainContext ctx,
                              final Request request,
@@ -151,19 +158,19 @@ final class PayloadGenFactory {
                     .content(gBuffer)
                     .last(true)
                     .build();
-            
+
             ctx.write(content, ((!requestPacket.isCommitted())
                     ? ctx.getTransportContext().getCompletionHandler()
                     : null));
             return true;
         }
-        
+
         @Override
         protected long getContentLength(final Request request) {
             return request.getContentLength() >= 0
                     ? request.getContentLength()
                     : request.getByteData().length;
-        }        
+        }
     }
 
 
@@ -173,10 +180,12 @@ final class PayloadGenFactory {
         // -------------------------------------------- Methods from PayloadGenerator
 
 
+        @Override
         public boolean handlesPayloadType(final Request request) {
             return (request.getStringData() != null);
         }
 
+        @Override
         @SuppressWarnings({"unchecked"})
         public boolean generate(final FilterChainContext ctx,
                              final Request request,
@@ -212,10 +221,12 @@ final class PayloadGenFactory {
         // -------------------------------------------- Methods from PayloadGenerator
 
 
+        @Override
         public boolean handlesPayloadType(final Request request) {
             return isNonEmpty(request.getFormParams());
         }
 
+        @Override
         @SuppressWarnings({"unchecked"})
         public boolean generate(final FilterChainContext ctx,
                              final Request request,
@@ -229,7 +240,7 @@ final class PayloadGenFactory {
             if (charset == null) {
                 charset = Charsets.ASCII_CHARSET.name();
             }
-            
+
             if (isNonEmpty(request.getFormParams())) {
                 StringBuilder sb = new StringBuilder(128);
                 for (Param param : request.getFormParams()) {
@@ -250,7 +261,7 @@ final class PayloadGenFactory {
                 }
                 ctx.write(content, ((!requestPacket.isCommitted()) ? ctx.getTransportContext().getCompletionHandler() : null));
             }
-            
+
             return true;
         }
 
@@ -261,10 +272,12 @@ final class PayloadGenFactory {
         // -------------------------------------------- Methods from PayloadGenerator
 
 
+        @Override
         public boolean handlesPayloadType(final Request request) {
             return (request.getStreamData() != null);
         }
 
+        @Override
         @SuppressWarnings({"unchecked"})
         public boolean generate(final FilterChainContext ctx,
                              final Request request,
@@ -302,7 +315,7 @@ final class PayloadGenFactory {
                 buffer.allowBufferDispose(false);
                 ctx.write(content, ((!requestPacket.isCommitted()) ? ctx.getTransportContext().getCompletionHandler() : null));
             }
-            
+
             return true;
         }
 
@@ -314,10 +327,12 @@ final class PayloadGenFactory {
         // -------------------------------------------- Methods from PayloadGenerator
 
 
+        @Override
         public boolean handlesPayloadType(final Request request) {
             return isNonEmpty(request.getParts());
         }
 
+        @Override
         public boolean generate(final FilterChainContext ctx,
                                 final Request request,
                                 final HttpRequestPacket requestPacket)
@@ -390,10 +405,12 @@ final class PayloadGenFactory {
         // -------------------------------------------- Methods from PayloadGenerator
 
 
+        @Override
         public boolean handlesPayloadType(final Request request) {
             return (request.getFile() != null);
         }
 
+        @Override
         @SuppressWarnings({"unchecked"})
         public boolean generate(final FilterChainContext ctx,
                              final Request request,
@@ -404,9 +421,9 @@ final class PayloadGenFactory {
             requestPacket.setContentLengthLong(f.length());
             final HttpTransactionContext context =
                     HttpTransactionContext.currentTransaction(requestPacket);
-            
+
             if (!SEND_FILE_SUPPORT || requestPacket.isSecure()) {
-                
+
                 final FileInputStream fis = new FileInputStream(request.getFile());
                 final MemoryManager mm = ctx.getMemoryManager();
                 AtomicInteger written = new AtomicInteger();
@@ -464,7 +481,7 @@ final class PayloadGenFactory {
             return request.getContentLength() >= 0
                     ? request.getContentLength()
                     : request.getFile().length();
-        }        
+        }
     } // END FilePayloadGenerator
 
 
@@ -473,10 +490,12 @@ final class PayloadGenFactory {
         // -------------------------------------------- Methods from PayloadGenerator
 
 
+        @Override
         public boolean handlesPayloadType(final Request request) {
             return (request.getBodyGenerator() != null);
         }
 
+        @Override
         @SuppressWarnings({"unchecked"})
         public boolean generate(final FilterChainContext ctx,
                              final Request request,
@@ -517,9 +536,9 @@ final class PayloadGenFactory {
                             if (generator instanceof FeedableBodyGenerator) {
                                 ((FeedableBodyGenerator) generator).initializeAsynchronousTransfer(ctx, requestPacket);
                                 return false;
-                            } else {
-                                throw new IllegalStateException("BodyGenerator unexpectedly returned 0 bytes available");
                             }
+                            throw new IllegalStateException(
+                                "Generator " + generator + "  is not an instance of " + FeedableBodyGenerator.class);
                         }
                     }
 
@@ -538,5 +557,5 @@ final class PayloadGenFactory {
             }
         }
 
-    } // END BodyGeneratorAdapter        
+    } // END BodyGeneratorAdapter
 }
