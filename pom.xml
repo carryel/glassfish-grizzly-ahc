@@ -31,7 +31,7 @@
     <artifactId>grizzly-http-client</artifactId>
     <packaging>jar</packaging>
     <name>Grizzly Async HTTP Client</name>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>5.0.0</version>
     <description>
         The Grizzly Async Http Client library purpose is to allow Java applications to easily execute HTTP requests and
         asynchronously process the HTTP responses.
@@ -41,7 +41,7 @@
         <connection>scm:git:https://github.com/eclipse-ee4j/glassfish-grizzly-ahc.git</connection>
         <developerConnection>scm:git:git@github.com:eclipse-ee4j/glassfish-grizzly-ahc.git</developerConnection>
         <url>https://github.com/eclipse-ee4j/glassfish-grizzly-ahc</url>
-      <tag>HEAD</tag>
+      <tag>5.0.0</tag>
     </scm>
     <issueManagement>
         <system>GitHub</system>
