@@ -71,7 +71,7 @@ public abstract class MaxTotalConnectionTest extends AbstractBasicTest {
 
     @Test
     public void testMaxTotalConnections() throws InterruptedException {
-        String[] urls = new String[] { "http://google.com", "http://nonexistingdomain.ru" };
+        String[] urls = new String[] { "http://google.com", "http://nonexistingdomain.ru", "http://github.com" };
 
         AsyncHttpClientConfig config = new AsyncHttpClientConfig.Builder().setConnectTimeout(1000).setRequestTimeout(5000)
                 .setAllowPoolingConnections(false).setMaxConnections(2).setMaxConnectionsPerHost(1).build();
