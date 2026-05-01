@@ -238,15 +238,7 @@
                 <version>6.0.2</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <manifestLocation>META-INF</manifestLocation>
-                    <instructions>
-                        <Import-Package>
-                            *
-                        </Import-Package>
-                        <Export-Package>
-                            com.ning.http.*;version=${project.version},
-                        </Export-Package>
-                    </instructions>
+                    <manifestLocation>${project.build.directory}/META-INF</manifestLocation>
                 </configuration>
                 <executions>
                     <execution>
