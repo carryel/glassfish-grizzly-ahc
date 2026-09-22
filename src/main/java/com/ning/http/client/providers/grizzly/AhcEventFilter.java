@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2026 Contributors to the Eclipse Foundation.
  * Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
  * Copyright (c) 2012-2016 Sonatype, Inc. All rights reserved.
  *
@@ -39,6 +40,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import com.ning.http.util.AsyncHttpProviderUtils;
 import org.glassfish.grizzly.Buffer;
 import org.glassfish.grizzly.Connection;
 import org.glassfish.grizzly.filterchain.FilterChainContext;
@@ -806,17 +809,20 @@ final class AhcEventFilter extends HttpClientFilter {
             final Uri newUri, final HttpResponsePacket response,
             final Realm realm, boolean asGet) {
         final Request prototype = ctx.getAhcRequest();
+        final Uri origUri = prototype.getUri();
         final FluentCaseInsensitiveStringsMap prototypeHeaders =
                 prototype.getHeaders();
         
         prototypeHeaders.remove(Header.Host.toString());
         prototypeHeaders.remove(Header.ContentLength.toString());
-        
-        if (asGet)
+        if (asGet) {
             prototypeHeaders.remove(Header.ContentType.toString());
-        if (realm != null && realm.getScheme() == AuthScheme.NTLM) {
+        }
+        final boolean crossOrigin = !AsyncHttpProviderUtils.isSameHostAndProtocol(origUri, newUri);
+        if (crossOrigin || (realm != null && realm.getScheme() == AuthScheme.NTLM)) {
             prototypeHeaders.remove(Header.Authorization.toString());
             prototypeHeaders.remove(Header.ProxyAuthorization.toString());
+            prototypeHeaders.remove(Header.Cookie.toString());
         }
         
         final RequestBuilder builder = new RequestBuilder(prototype);
@@ -824,6 +830,10 @@ final class AhcEventFilter extends HttpClientFilter {
             builder.setMethod("GET");
         }
         builder.setUrl(newUri.toString());
+        if (crossOrigin) {
+            builder.resetCookies();
+            builder.setRealm(null);
+        }
         for (String cookieStr : response.getHeaders().values(Header.SetCookie)) {
             builder.addOrReplaceCookie(CookieDecoder.decode(cookieStr));
         }
